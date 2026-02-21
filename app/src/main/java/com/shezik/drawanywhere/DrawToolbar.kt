@@ -117,6 +117,7 @@ fun DrawToolbar(
         onChangeAutoClearCanvas = viewModel::setAutoClearCanvas,
         onChangeVisibleOnStart = viewModel::setVisibleOnStart,
         onChangeStylusOnly = viewModel::setStylusOnly,
+        onChangeStraightLineSnap = viewModel::setStraightLineSnap,
         onQuitApplication = viewModel::quitApplication
     ).associateBy { it.id }
 
@@ -734,6 +735,8 @@ private fun ToolbarControls(
     onChangeVisibleOnStart: (Boolean) -> Unit,
     stylusOnly: Boolean,
     onChangeStylusOnly: (Boolean) -> Unit,
+    straightLineSnap: Boolean,
+    onChangeStraightLineSnap: (Boolean) -> Unit,
     onQuitApplication: () -> Unit
 ) {
     Column(
@@ -795,6 +798,12 @@ private fun ToolbarControls(
             label = stringResource(R.string.stylus_only),
             isChecked = stylusOnly,
             onCheckedChange = onChangeStylusOnly
+        )
+
+        CheckboxControl(
+            label = stringResource(R.string.straight_line_snap),
+            isChecked = straightLineSnap,
+            onCheckedChange = onChangeStraightLineSnap
         )
 
         Button(
@@ -976,6 +985,7 @@ private fun createAllToolbarButtons(
     onChangeAutoClearCanvas: (Boolean) -> Unit,
     onChangeVisibleOnStart: (Boolean) -> Unit,
     onChangeStylusOnly: (Boolean) -> Unit,
+    onChangeStraightLineSnap: (Boolean) -> Unit,
     onQuitApplication: () -> Unit
 ): List<ToolbarButton> {
     return listOf(
@@ -1066,6 +1076,8 @@ private fun createAllToolbarButtons(
                     onChangeVisibleOnStart = onChangeVisibleOnStart,
                     stylusOnly = uiState.stylusOnly,
                     onChangeStylusOnly = onChangeStylusOnly,
+                    straightLineSnap = uiState.straightLineSnap,
+                    onChangeStraightLineSnap = onChangeStraightLineSnap,
                     onQuitApplication = onQuitApplication
                 ) },
                 { AboutScreen() }

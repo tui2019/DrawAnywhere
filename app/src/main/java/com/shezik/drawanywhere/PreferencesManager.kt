@@ -41,6 +41,7 @@ class PreferencesManager(private val context: Context) {
         val AUTO_CLEAR_CANVAS = booleanPreferencesKey("auto_clear_canvas")
         val VISIBLE_ON_START = booleanPreferencesKey("visible_on_start")
         val STYLUS_ONLY = booleanPreferencesKey("stylus_only")
+        val STRAIGHT_LINE_SNAP = booleanPreferencesKey("straight_line_snap")
 
         // Pen-specific keys (for saving multiple pens)
         fun penColorKey(penType: PenType) = intPreferencesKey("${penType.name}_color")
@@ -97,6 +98,7 @@ class PreferencesManager(private val context: Context) {
                 defaultUiState.toolbarOrientation),
             autoClearCanvas = preferences[PreferencesKeys.AUTO_CLEAR_CANVAS] ?: defaultUiState.autoClearCanvas,
             stylusOnly = preferences[PreferencesKeys.STYLUS_ONLY] ?: defaultUiState.stylusOnly,
+            straightLineSnap = preferences[PreferencesKeys.STRAIGHT_LINE_SNAP] ?: defaultUiState.straightLineSnap,
 
             visibleOnStart = visibleOnStart,
             canvasVisible = visibleOnStart,
@@ -111,6 +113,7 @@ class PreferencesManager(private val context: Context) {
             preferences[PreferencesKeys.AUTO_CLEAR_CANVAS] = uiState.autoClearCanvas
             preferences[PreferencesKeys.VISIBLE_ON_START] = uiState.visibleOnStart
             preferences[PreferencesKeys.STYLUS_ONLY] = uiState.stylusOnly
+            preferences[PreferencesKeys.STRAIGHT_LINE_SNAP] = uiState.straightLineSnap
 
             // Save each pen's configuration
             for ((penType, config) in uiState.penConfigs) {

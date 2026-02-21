@@ -114,6 +114,26 @@ class DrawController {
         }
     }
 
+    fun straightenLatestPath(start: Offset, end: Offset) {
+        _pathList.lastOrNull()?.let { latestPath ->
+            latestPath.points.clear()
+            latestPath.points.add(start)
+            latestPath.points.add(end)
+            latestPath.invalidatePath()
+        }
+    }
+
+    fun updateLatestPathEndpoint(end: Offset) {
+        _pathList.lastOrNull()?.let { latestPath ->
+            if (latestPath.points.size >= 2) {
+                latestPath.points[latestPath.points.lastIndex] = end
+            } else {
+                latestPath.points.add(end)
+            }
+            latestPath.invalidatePath()
+        }
+    }
+
     fun createPath(newPoint: Offset) {
         if (!this::penConfig.isInitialized)
             throw IllegalStateException("PenConfig used without initialization!")

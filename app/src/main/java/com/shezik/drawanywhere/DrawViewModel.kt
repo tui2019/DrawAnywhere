@@ -46,6 +46,7 @@ data class UiState(
     val autoClearCanvas: Boolean = false,
     val visibleOnStart: Boolean = true,
     val stylusOnly: Boolean = false,
+    val straightLineSnap: Boolean = true,
 
     val currentPenType: PenType = PenType.Pen,  // This could be morphed into pen IDs later, if multiple pens with the same type is desired.
     val penConfigs: Map<PenType, PenConfig> = defaultPenConfigs(),
@@ -75,8 +76,6 @@ fun defaultPenConfigs(): Map<PenType, PenConfig> = mapOf(
     PenType.StrokeEraser to PenConfig(penType = PenType.StrokeEraser, width = 50f)
 )
 
-
-
 @OptIn(FlowPreview::class)
 class DrawViewModel(
     private val controller: DrawController,
@@ -99,16 +98,11 @@ class DrawViewModel(
         controller.setPenConfig(initialUiState.currentPenConfig)
 
         _uiState
-            .onEach { state ->
-                preferencesMgr.saveUiState(state)
-            }
+            .onEach { preferencesMgr.saveUiState(it) }
             .launchIn(viewModelScope)
 
         _uiState
-            .onEach { state ->
-                // TODO: Should we move pinned buttons logic here?
-                controller.setPenConfig(state.currentPenConfig)
-            }
+            .onEach { controller.setPenConfig(it.currentPenConfig) }
             .launchIn(viewModelScope)
 
         resetToolbarTimer()
@@ -135,6 +129,7 @@ class DrawViewModel(
 
     var previousPenType: PenType? = null
     var isStrokeDown = false
+    private var strokeStartPoint: Offset? = null
 
     fun startStroke(point: Offset, modifier: StrokeModifier) {
         finishStroke()  // Oh no! No multitouch! Who cares.
@@ -147,6 +142,7 @@ class DrawViewModel(
 
         controller.createPath(point)
         isStrokeDown = true
+        strokeStartPoint = point
     }
 
     fun updateStroke(point: Offset) {
@@ -154,9 +150,20 @@ class DrawViewModel(
         controller.updateLatestPath(point)
     }
 
+    fun snapToStraightLine(endPoint: Offset) {
+        val start = strokeStartPoint ?: return
+        controller.straightenLatestPath(start, endPoint)
+    }
+
+    fun updateSnappedEndpoint(point: Offset) {
+        if (!isStrokeDown) return
+        controller.updateLatestPathEndpoint(point)
+    }
+
     fun finishStroke() {
         if (!isStrokeDown) return
 
+        strokeStartPoint = null
         controller.finishPath()
 
         previousPenType?.let {
@@ -329,6 +336,9 @@ class DrawViewModel(
 
     fun setStylusOnly(state: Boolean) =
         _uiState.update { it.copy(stylusOnly = state) }
+
+    fun setStraightLineSnap(state: Boolean) =
+        _uiState.update { it.copy(straightLineSnap = state) }
 
     fun quitApplication() {
         viewModelScope.launch {
