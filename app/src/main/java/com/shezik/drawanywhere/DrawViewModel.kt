@@ -45,6 +45,7 @@ data class UiState(
     val canvasPassthrough: Boolean = false,
     val autoClearCanvas: Boolean = false,
     val visibleOnStart: Boolean = true,
+    val stylusOnly: Boolean = false,
 
     val currentPenType: PenType = PenType.Pen,  // This could be morphed into pen IDs later, if multiple pens with the same type is desired.
     val penConfigs: Map<PenType, PenConfig> = defaultPenConfigs(),
@@ -325,6 +326,9 @@ class DrawViewModel(
 
     fun setVisibleOnStart(state: Boolean) =
         _uiState.update { it.copy(visibleOnStart = state) }
+
+    fun setStylusOnly(state: Boolean) =
+        _uiState.update { it.copy(stylusOnly = state) }
 
     fun quitApplication() {
         viewModelScope.launch {

@@ -38,6 +38,9 @@ fun Modifier.stylusAwareDrawing(
         if (initialChange == null || !initialChange.pressed)
             return@awaitEachGesture
 
+        if (viewModel.uiState.value.stylusOnly && initialChange.type != PointerType.Stylus)
+            return@awaitEachGesture
+
         val strokeModifier = when {
             initialChange.type != PointerType.Stylus -> StrokeModifier.None
             initialEvent.buttons.isPrimaryPressed && initialEvent.buttons.isSecondaryPressed -> StrokeModifier.Both

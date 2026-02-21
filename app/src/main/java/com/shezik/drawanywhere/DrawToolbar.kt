@@ -116,6 +116,7 @@ fun DrawToolbar(
         onChangeOrientation = viewModel::setToolbarOrientation,
         onChangeAutoClearCanvas = viewModel::setAutoClearCanvas,
         onChangeVisibleOnStart = viewModel::setVisibleOnStart,
+        onChangeStylusOnly = viewModel::setStylusOnly,
         onQuitApplication = viewModel::quitApplication
     ).associateBy { it.id }
 
@@ -683,7 +684,7 @@ private fun ColorPicker(
                     }
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(2.dp))
         }
     }
@@ -731,6 +732,8 @@ private fun ToolbarControls(
     onChangeAutoClearCanvas: (Boolean) -> Unit,
     visibleOnStart: Boolean,
     onChangeVisibleOnStart: (Boolean) -> Unit,
+    stylusOnly: Boolean,
+    onChangeStylusOnly: (Boolean) -> Unit,
     onQuitApplication: () -> Unit
 ) {
     Column(
@@ -786,6 +789,12 @@ private fun ToolbarControls(
             label = stringResource(R.string.canvas_visible_on_start),
             isChecked = visibleOnStart,
             onCheckedChange = onChangeVisibleOnStart
+        )
+
+        CheckboxControl(
+            label = stringResource(R.string.stylus_only),
+            isChecked = stylusOnly,
+            onCheckedChange = onChangeStylusOnly
         )
 
         Button(
@@ -909,10 +918,11 @@ private fun CheckboxControl(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceAround,
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
+            modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(4.dp),
             horizontalAlignment = Alignment.Start
         ) {
@@ -965,6 +975,7 @@ private fun createAllToolbarButtons(
     onChangeOrientation: (ToolbarOrientation) -> Unit,
     onChangeAutoClearCanvas: (Boolean) -> Unit,
     onChangeVisibleOnStart: (Boolean) -> Unit,
+    onChangeStylusOnly: (Boolean) -> Unit,
     onQuitApplication: () -> Unit
 ): List<ToolbarButton> {
     return listOf(
@@ -1053,6 +1064,8 @@ private fun createAllToolbarButtons(
                     onChangeAutoClearCanvas = onChangeAutoClearCanvas,
                     visibleOnStart = uiState.visibleOnStart,
                     onChangeVisibleOnStart = onChangeVisibleOnStart,
+                    stylusOnly = uiState.stylusOnly,
+                    onChangeStylusOnly = onChangeStylusOnly,
                     onQuitApplication = onQuitApplication
                 ) },
                 { AboutScreen() }

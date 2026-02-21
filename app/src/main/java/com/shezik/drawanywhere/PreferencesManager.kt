@@ -40,6 +40,7 @@ class PreferencesManager(private val context: Context) {
         val TOOLBAR_ORIENTATION = stringPreferencesKey("toolbar_orientation")
         val AUTO_CLEAR_CANVAS = booleanPreferencesKey("auto_clear_canvas")
         val VISIBLE_ON_START = booleanPreferencesKey("visible_on_start")
+        val STYLUS_ONLY = booleanPreferencesKey("stylus_only")
 
         // Pen-specific keys (for saving multiple pens)
         fun penColorKey(penType: PenType) = intPreferencesKey("${penType.name}_color")
@@ -95,6 +96,7 @@ class PreferencesManager(private val context: Context) {
                 preferences[PreferencesKeys.TOOLBAR_ORIENTATION],
                 defaultUiState.toolbarOrientation),
             autoClearCanvas = preferences[PreferencesKeys.AUTO_CLEAR_CANVAS] ?: defaultUiState.autoClearCanvas,
+            stylusOnly = preferences[PreferencesKeys.STYLUS_ONLY] ?: defaultUiState.stylusOnly,
 
             visibleOnStart = visibleOnStart,
             canvasVisible = visibleOnStart,
@@ -108,6 +110,7 @@ class PreferencesManager(private val context: Context) {
             preferences[PreferencesKeys.TOOLBAR_ORIENTATION] = uiState.toolbarOrientation.name
             preferences[PreferencesKeys.AUTO_CLEAR_CANVAS] = uiState.autoClearCanvas
             preferences[PreferencesKeys.VISIBLE_ON_START] = uiState.visibleOnStart
+            preferences[PreferencesKeys.STYLUS_ONLY] = uiState.stylusOnly
 
             // Save each pen's configuration
             for ((penType, config) in uiState.penConfigs) {
